@@ -1,0 +1,15 @@
+{
+  "name": "freepik-automation",
+  "version": "1.0.0",
+  "description": "Node.js server to host the Freepik automation script.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
