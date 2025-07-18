@@ -1,176 +1,147 @@
-
-// --- PROMPT TEXTUEL ALÉATOIRE: VARIABLES ET LOGIQUE ---
-const basePromptPrefix = "Realistic ";
-const midPromptPart1 = " casting sharp, radiant reflections and shadows on the surface. The object lies on ";
-const midPromptPart2 = ". Studio lighting ";
-const promptSuffix = " highlights the glossy, reflective texture and creates a luxurious, dreamy atmosphere. Minimalistic composition, pastel color palette, elegance, high-resolution render, macro style.";
-
-const subjects = [
-    "glass single strawberry in clear pink crystal with intricate seed details and realistic green leaves",
-    "polished glass apple in clear emerald green crystal with intricate leaf texture and a dewdrop",
-    "translucent crystal lemon slice with frosty sugar-like texture and detailed zest pores",
-    "frosted glass bunch of grapes in deep purple, with delicate vine details and individual spherical forms",
-    "iridescent glass pear in shimmering opalescent white with a tiny, perfectly formed stem",
-    "faceted crystal orange segment in vibrant amber with subtle internal light refractions",
-    "clear glass banana with subtle internal air bubbles and a smooth, curved shape",
-    "smoked glass single fig in dark violet with visible seed patterns and a delicate stem",
-    "polished sapphire crystal blueberry with a subtle bloom effect and tiny reflective points",
-    "blown glass raspberry in bright ruby red, with intricate drupelet texture and a soft glow",
-    "transparent acrylic pineapple with razor-sharp facets and a crystal-clear appearance",
-    "etched glass peach in soft coral pink with frosted surface and delicate fuzz effect",
-    "liquid glass kiwi slice with black seed details and vibrant green pulp swirls",
-    "cut crystal cherry in deep burgundy, with a delicate stem and a glossy finish",
-    "amber glass mango with internal fibrous details and a smooth, polished skin",
-    "clear glass passion fruit with internal seed cavities and a translucent, bubbly pulp",
-    "faceted glass plum in deep indigo, with sharp edges and a subtle internal shimmer",
-    "frosted crystal pomegranate aril with visible seed and translucent ruby-red casing",
-    "polished glass lime in vibrant citrus green with textured skin and a juicy appearance",
-    "clear glass watermelon slice with dark seed inclusions and subtle pink transparency",
-    "blown glass persimmon in warm orange with a delicate calyx and a smooth, round form",
-    "transparent crystal lychee with a pearly white flesh effect and a single dark seed",
-    "faceted glass cantaloupe slice in soft melon orange with intricate netting texture",
-    "iridescent glass dragon fruit slice in shimmering pink with tiny black seed dots",
-    "clear glass star fruit in pale yellow with distinctive ridges and transparent segments",
-    "polished crystal clementine in bright tangerine with a segmented interior and a smooth peel",
-    "translucent glass coconut half with textured brown outer shell and clear inner water effect",
-    "faceted amethyst crystal grape with a soft, natural hue and a polished skin",
-    "glowing ruby glass strawberry with a perfect heart shape and sparkling details",
-    "smooth glass avocado half with a polished green skin and a textured glass pit",
-    "clear glass tangerine with delicate peel texture and visible segments inside",
-    "polished crystal papaya slice with tiny black seeds and a smooth orange flesh",
-    "translucent glass guava with internal seeds and a slightly rough skin texture",
-    "faceted emerald glass kiwi with a fuzzy skin texture and clear green pulp",
-    "iridescent glass fig with a subtle purple sheen and visible internal seeds",
-    "blown glass apricot in soft orange with a subtle blush and a smooth, polished surface",
-    "transparent crystal blackberry with individual drupelets and a deep, dark hue",
-    "polished glass nectarine in vibrant peach with a smooth skin and a delicate cleft",
-    "faceted blue glass blueberry with a frosted appearance and tiny indentations",
-    "clear glass pomegranate half with sparkling arils and a segmented interior",
-    "liquid glass passionfruit with internal bubbly pulp and a smooth, translucent skin",
-    "cut crystal golden delicious apple with a polished skin and a clear, amber tint",
-    "translucent glass kiwi whole fruit with fuzzy skin and a glowing green interior",
-    "faceted rose crystal peach with a soft, romantic hue and a velvety texture effect",
-    "iridescent glass grape single berry in shimmering green with a delicate bloom",
-    "blown glass fig with a deep, rich color and subtle internal details",
-    "transparent crystal persimmon with a translucent skin and a star-shaped calyx",
-    "polished glass starfruit with distinct ridges and a clear, refreshing appearance",
-    "faceted glass lime slice with sharp edges and a vibrant green transparency",
-    "clear glass single lychee with a textured outer shell and a smooth, inner sphere"
+const compositionAndStyles = [
+    "A fashion-forward portrait of",
+    "A candid, photojournalistic shot of",
+    "A dramatic, high-contrast black and white photo of",
+    "An ethereal, dream-like image of",
+    "A minimalist, clean studio portrait of",
+    "A vibrant, high-energy action shot of",
+    "A vintage, sepia-toned photograph of",
+    "A futuristic, cyberpunk-inspired portrait of",
+    "A soft-focus, romantic close-up of",
+    "A powerful, cinematic-style photo of",
+    "A surreal, artistic composition featuring",
+    "A classic, elegant black and white portrait of",
+    "A bold, pop-art inspired image of",
+    "A serene, natural light portrait of",
+    "A moody, low-key shot of"
 ];
 
-const backgroundsAndSurfaces = [
-    "a soft pink background, casting sharp, radiant reflections and shadows on the surface",
-    "a dark grey polished concrete slab, reflecting subtle light and creating deep shadows",
-    "a smooth, off-white matte paper backdrop, absorbing light softly and minimizing reflections",
-    "a vibrant teal silk fabric, creating soft drapes and diffused reflections",
-    "a transparent acrylic block, allowing light to pass through and create complex refractions",
-    "a stark black velvet cloth, absorbing all light to emphasize the object's glow",
-    "a highly reflective mirrored surface, doubling the object and creating infinite reflections",
-    "a subtly textured beige linen fabric, giving a natural, tactile feel",
-    "a cool blue frosted glass panel, diffusing light evenly and creating a serene mood",
-    "a warm wooden tabletop with a natural grain, adding an organic touch",
-    "a shimmering gold foil background, creating opulent, scattered reflections",
-    "a deep green marble slab with white veins, adding a touch of classic luxury",
-    "a pristine white glossy ceramic tile, creating sharp, clear reflections",
-    "a muted purple seamless paper backdrop, providing a soft, calming presence",
-    "a dark, textured volcanic rock surface, creating a rugged contrast",
-    "a clear water surface with gentle ripples, distorting reflections subtly",
-    "a pile of fine white sand, creating a soft, natural base",
-    "a deep red crushed velvet backdrop, exuding richness and drama",
-    "a light grey concrete wall, acting as a minimalist, industrial background",
-    "a bed of glistening ice shards, creating a cool, fractured reflection",
-    "a soft, diffused gradient background from light blue to white",
-    "a polished copper sheet, casting warm, metallic reflections",
-    "a vibrant yellow felt fabric, adding a playful, energetic pop",
-    "a dark polished wood floor with subtle reflections of ambient light",
-    "a transparent glass sheet with condensation droplets, creating a soft blur",
-    "a stack of pristine white art paper, providing a clean, crisp background",
-    "a deep indigo matte background, absorbing light for a dramatic effect",
-    "a textured silver leaf backdrop, creating an antique, subtle sheen",
-    "a soft, flowing sheer white curtain, diffusing light gently",
-    "a minimalist dark grey stone pedestal, emphasizing the object's form",
-    "a glowing light box with a soft, uniform white illumination",
-    "a vibrant orange corrugated metal sheet, adding an industrial edge",
-    "a smooth, black onyx slab, providing a deep, mirror-like surface",
-    "a delicate pale green watercolor background, with soft, blended hues",
-    "a polished stainless steel plate, reflecting light with sharp clarity",
-    "a bed of dried, natural moss, creating an organic, earthy setting",
-    "a shimmering blue satin fabric, creating luxurious, flowing drapes",
-    "a translucent, frosted acrylic surface with internal light diffusion",
-    "a dark brown rustic wooden plank, with visible grain and texture",
-    "a vibrant magenta seamless paper background, bold and striking",
-    "a stack of smooth, grey river stones, creating a natural, zen feel",
-    "a polished black granite countertop, providing sharp, dark reflections",
-    "a soft, warm terracotta colored plaster wall, adding rustic charm",
-    "a transparent glass sphere, distorting the background in a unique way",
-    "a bed of vibrant green artificial grass, adding a pop of nature",
-    "a textured dark blue denim fabric, creating a casual, cool backdrop",
-    "a polished brass tray, reflecting a soft, golden glow",
-    "a pale yellow ceramic tile with a subtle gloss finish",
-    "a distressed white wooden table, providing a vintage, shabby chic look",
-    "a background of swirling, ethereal smoke in soft grey"
+const modelDescriptions = [
+    "a light-skinned woman with voluminous red curls,",
+    "an East Asian woman with a sleek black bob,",
+    "a dark-skinned woman with long, elegant braids,",
+    "a South Asian woman with flowing dark hair and golden skin,",
+    "a woman with androgynous features and a short, platinum blonde pixie cut,",
+    "a freckled woman with strawberry blonde hair in a messy bun,",
+    "a Latina woman with cascading dark curls and a warm smile,",
+    "a Scandinavian woman with icy blue eyes and straight blonde hair,",
+    "a woman with striking silver hair and wise eyes,",
+    "a woman with a shaved head and confident expression,",
+    "a Mediterranean woman with olive skin and thick, wavy brown hair,",
+    "a woman with vibrant, dyed-blue hair in a sharp undercut,",
+    "a woman with a beautiful vitiligo pattern on her skin,",
+    "a woman with a classic 1950s hairstyle and fair skin,",
+    "a woman with a face full of character and expressive wrinkles,"
 ];
 
-const lightingAndStyles = [
-    "Studio lighting",
-    "Soft, diffused natural light from a window, creating gentle highlights and a serene mood",
-    "Dramatic chiaroscuro lighting from a single overhead spot, emphasizing contrast and mystery",
-    "Vibrant neon backlighting, giving an ethereal glow and futuristic feel",
-    "Warm golden hour light, casting long shadows and creating a cozy, inviting ambiance",
-    "Cool, crisp daylight from an open skylight, emphasizing clarity and realism",
-    "Subtle rim lighting from behind, creating a halo effect and emphasizing contours",
-    "Low-key cinematic lighting with deep shadows and selective illumination",
-    "High-key ethereal lighting, making the object appear weightless and pure",
-    "Multiple softboxes illuminating from all sides, for a flawless, shadowless look",
-    "Gritty, industrial lighting with harsh shadows and strong directional light",
-    "Dreamy, hazy light with soft focus and glowing highlights",
-    "Sharp, precise macro lighting, revealing every tiny detail with incredible clarity",
-    "Mystical, atmospheric lighting with subtle fog and diffused beams",
-    "Bright, clean white light, for a modern and minimalist aesthetic",
-    "Soft, warm candle-light glow, creating an intimate and romantic setting",
-    "Dynamic, scattered light reflecting off water, creating dancing patterns",
-    "Bold, high-contrast lighting with deep black shadows and stark whites",
-    "Soft, romantic twilight illumination, with a hint of purple and orange hues",
-    "Sleek, futuristic LED strip lighting, highlighting edges and contours with precision",
-    "Organic, natural sunlight filtering through leaves, creating dappled shadows",
-    "Vivid, saturated pop art lighting, with bold colors and strong outlines",
-    "Gentle, diffused light from a cloudy sky, creating even, soft illumination",
-    "Dramatic spotlighting from below, creating an unsettling and intriguing effect",
-    "Soft, ambient light from hidden sources, creating a seamless glow",
-    "Cool, clinical lighting, emphasizing precision and sterile beauty",
-    "Warm, inviting lamplight, creating a cozy and comfortable atmosphere",
-    "Ethereal, back-lit smoke, creating a mysterious and atmospheric glow",
-    "Bright, direct flash photography, revealing every texture and detail starkly",
-    "Soft, romantic moonlight glow, with gentle shadows and a silver sheen",
-    "Dynamic, fractured light passing through a prism, creating rainbow effects",
-    "Bold, expressive use of colored gels on lights, creating vibrant hues",
-    "Subtle, soft focus lighting, emphasizing dreaminess and abstract forms",
-    "Dramatic, single-source overhead light, casting deep, defined shadows",
-    "Clean, natural window light on a cloudy day, for a muted, soft palette",
-    "Warm, diffused fireplace glow, creating an intimate, cozy scene",
-    "Vibrant, energetic party lighting with dynamic color changes",
-    "Soft, moody light, enhancing textures and creating depth",
-    "Sharp, clean edge lighting, defining the object's silhouette perfectly",
-    "Gentle, back-lit bokeh effect, creating a soft, blurred background",
-    "Cool, ambient light from a moonlit window, enhancing shadows and reflections",
-    "Vibrant, playful studio lighting with colored backgrounds and whimsical feel",
-    "Subtle, natural overcast lighting, for a soft and uniform look",
-    "Dramatic, cinematic sidelighting, creating long, intriguing shadows",
-    "Bright, sunny outdoor light, emphasizing vibrant colors and sharp details",
-    "Soft, diffused light from a large lightbox, for a perfectly even illumination",
-    "Warm, inviting light filtering through sheer curtains, creating a gentle mood",
-    "Ethereal, glowing light from an unseen source, creating a magical aura",
-    "Sharp, focused light on specific details, blurring the rest of the object",
-    "Cool, analytical lighting, emphasizing clarity and intricate details"
+const clothingDescriptions = [
+    "wearing a textured two-tone dress in olive green and ivory.",
+    "dressed in a sharp, tailored black power suit.",
+    "wearing a flowing bohemian silk gown with floral patterns.",
+    "in a futuristic, iridescent metallic jacket and leather pants.",
+    "wearing a simple, elegant white linen shirt and jeans.",
+    "adorned in a traditional, brightly colored sari with intricate embroidery.",
+    "in a vintage 1920s flapper dress with sequins and beads.",
+    "wearing a cozy, oversized knit sweater in a neutral tone.",
+    "in a punk-rock inspired outfit with a leather jacket and ripped denim.",
+    "wearing a delicate lace blouse and a long, flowing skirt.",
+    "in a minimalist, architectural black dress with sharp lines.",
+    "wearing a vibrant, African-print wrap dress.",
+    "in a sporty, high-fashion tracksuit with bold logos.",
+    "wearing a classic trench coat, belted at the waist.",
+    "in a dramatic, floor-length velvet cloak."
+];
+
+const poses = [
+    "posing delicately,",
+    "looking confidently into the camera,",
+    "laughing candidly,",
+    "gazing thoughtfully out a window,",
+    "in mid-stride, walking with purpose,",
+    "with a powerful, assertive stance,",
+    "her face partially obscured by shadow,",
+    "in a moment of quiet reflection,",
+    "dancing with joyful abandon,",
+    "leaning against a textured wall,",
+    "her expression serene and peaceful,",
+    "captured in a dynamic, athletic pose,",
+    "with a mysterious, enigmatic smile,",
+    "her hands framing her face,",
+    "in a relaxed, natural posture,"
+];
+
+const makeupStyles = [
+    "her eyelids covered in striking blue shadow.",
+    "with bold red lipstick and minimalist makeup.",
+    "featuring a natural, dewy look with visible freckles.",
+    "with dramatic, smoky eyes and a nude lip.",
+    "adorned with graphic, avant-garde eyeliner.",
+    "with a glossy, high-shine lip and glowing skin.",
+    "wearing no visible makeup, showcasing her natural beauty.",
+    "with a touch of gold leaf accentuating her cheekbones.",
+    "featuring a monochromatic makeup look in shades of pink.",
+    "with perfectly sculpted brows and a matte complexion.",
+    "with a futuristic, metallic sheen on her eyelids.",
+    "featuring a soft, romantic makeup style with flushed cheeks.",
+    "with a bold, dark berry lip color.",
+    "her face painted with artistic, abstract designs.",
+    "with a sun-kissed, bronzed glow."
+];
+
+const detailsAndProps = [
+    "surrounded by pastel blue flowers in the foreground.",
+    "holding a single, perfect red rose.",
+    "wearing oversized 70s-style sunglasses.",
+    "with a vintage film camera slung over her shoulder.",
+    "delicately holding a steaming cup of tea.",
+    "with a cascade of antique jewelry around her neck.",
+    "her hair adorned with tiny, star-shaped clips.",
+    "partially submerged in a pool of milky water.",
+    "surrounded by floating, translucent geometric shapes.",
+    "wearing elegant, long satin gloves.",
+    "with a neon sign glowing softly behind her.",
+    "holding an old, leather-bound book.",
+    "with a single tear tracing a path down her cheek.",
+    "wearing a futuristic, augmented reality visor.",
+    "with a majestic, colorful parrot perched on her shoulder."
+];
+
+const settingsAndLighting = [
+    "The scene is shot in high-resolution studio lighting.",
+    "The image is bathed in the golden hour sunlight of a Parisian street.",
+    "The background is a dark, moody alleyway with dramatic neon lights.",
+    "She is in a minimalist, white studio with soft, diffused light.",
+    "The setting is a lush, overgrown botanical garden with dappled sunlight.",
+    "The photo is taken against a backdrop of a brutalist concrete building.",
+    "The lighting is reminiscent of a classic film noir, with sharp shadows.",
+    "She is in a grand, baroque library filled with old books.",
+    "The background is a vibrant, bustling Tokyo street at night.",
+    "The lighting is soft and ethereal, as if from a dream.",
+    "The scene is a windswept, dramatic coastal cliff at dusk.",
+    "She is in a futuristic, sterile environment with cool, blue-toned lighting.",
+    "The background is a simple, textured wall, focusing all attention on her.",
+    "The lighting is warm and intimate, as if from a fireplace.",
+    "The setting is an abandoned, rustic farmhouse with light streaming through the windows."
 ];
 
 export function generatePrompt() {
-    const currentSubject = subjects[Math.floor(Math.random() * subjects.length)];
-    const currentBackground = backgroundsAndSurfaces[Math.floor(Math.random() * backgroundsAndSurfaces.length)];
-    const currentLighting = lightingAndStyles[Math.floor(Math.random() * lightingAndStyles.length)];
-    return basePromptPrefix + currentSubject + midPromptPart1 + currentBackground + midPromptPart2 + currentLighting + promptSuffix;
+    const style = compositionAndStyles[Math.floor(Math.random() * compositionAndStyles.length)];
+    const model = modelDescriptions[Math.floor(Math.random() * modelDescriptions.length)];
+    const clothing = clothingDescriptions[Math.floor(Math.random() * clothingDescriptions.length)];
+    const pose = poses[Math.floor(Math.random() * poses.length)];
+    const makeup = makeupStyles[Math.floor(Math.random() * makeupStyles.length)];
+    const details = detailsAndProps[Math.floor(Math.random() * detailsAndProps.length)];
+    const setting = settingsAndLighting[Math.floor(Math.random() * settingsAndLighting.length)];
+
+    return `${style} ${model} ${pose} ${makeup} ${clothing} ${details} ${setting}`;
 }
 
 export function getTotalCombinations() {
-    return subjects.length * backgroundsAndSurfaces.length * lightingAndStyles.length;
+    return compositionAndStyles.length *
+           modelDescriptions.length *
+           clothingDescriptions.length *
+           poses.length *
+           makeupStyles.length *
+           detailsAndProps.length *
+           settingsAndLighting.length;
 }
