@@ -1,20 +1,16 @@
-javascript:(function(){
-    // Déclaration d'une variable pour stocker l'ID du timeout.
+// Déclaration d'une variable pour stocker l'ID du timeout.
     let automationTimeoutId = null;
 
     // Variables globales pour le délai minimum et maximum (en millisecondes)
-    // Initialisées avec les valeurs par défaut (3 et 25 secondes)
     let minDelayMs = 3000;
     let maxDelayMs = 25000;
 
     // --- PROMPT TEXTUEL ALÉATOIRE: VARIABLES ET LOGIQUE ---
-    // Partie fixe du prompt pour le thème "Objets de Luxe en Studio" - inchangé
     const basePromptPrefix = "Realistic ";
     const midPromptPart1 = " casting sharp, radiant reflections and shadows on the surface. The object lies on ";
     const midPromptPart2 = ". Studio lighting ";
     const promptSuffix = " highlights the glossy, reflective texture and creates a luxurious, dreamy atmosphere. Minimalistic composition, pastel color palette, elegance, high-resolution render, macro style.";
 
-    // Variable 1: 50 variations pour les fruits en verre/cristal
     const subjects = [
         "glass single strawberry in clear pink crystal with intricate seed details and realistic green leaves",
         "polished glass apple in clear emerald green crystal with intricate leaf texture and a dewdrop",
@@ -68,7 +64,6 @@ javascript:(function(){
         "clear glass single lychee with a textured outer shell and a smooth, inner sphere"
     ];
 
-    // Variable 2: 50 variations pour l'arrière-plan et la surface
     const backgroundsAndSurfaces = [
         "a soft pink background, casting sharp, radiant reflections and shadows on the surface",
         "a dark grey polished concrete slab, reflecting subtle light and creating deep shadows",
@@ -122,7 +117,6 @@ javascript:(function(){
         "a background of swirling, ethereal smoke in soft grey"
     ];
 
-    // Variable 3: 50 variations pour l'éclairage et le style artistique
     const lightingAndStyles = [
         "Studio lighting",
         "Soft, diffused natural light from a window, creating gentle highlights and a serene mood",
@@ -176,12 +170,12 @@ javascript:(function(){
         "Cool, analytical lighting, emphasizing clarity and intricate details"
     ];
 
-    function applyCSS(){
-        const style=document.createElement('style');
-        style.type='text/css';
-        style.innerHTML='.custom-toast{display:none!important;}';
+    function applyCSS() {
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = '.custom-toast{display:none!important;}';
         document.head.appendChild(style);
-        console.log('CSS appliqué: .custom-toast est masqué.');
+        console.log(`CSS appliqué: .custom-toast est masqué.`);
     }
 
     function downloadBase64Image(base64Data, filename) {
@@ -194,42 +188,40 @@ javascript:(function(){
         console.log(`Image "${filename}" déclenchée pour le téléchargement.`);
     }
 
-    async function clickButtonsInLoop(){ // Fonction principale async
-        const textInput = document.querySelector('div[contenteditable="true"][data-tribute="true"]'); // Ajout du sélecteur pour l'élément texte
-        const secondButton=document.querySelector('[data-cy="generate-button"]');
-        const downloadButton=document.querySelector('[data-cy="download-ai-img-button"]');
-        const colorsButton=Array.from(document.querySelectorAll('button')).find(button=>button.textContent.includes('Colores'));
-        const addButton=document.querySelector('button[aria-haspopup="dialog"][data-state="closed"]');
-        const mainImageElement = document.querySelector('img.h-full.w-full.object-cover'); // L'aperçu de l'image (pour le téléchargement)
+    async function clickButtonsInLoop() {
+        const textInput = document.querySelector('div[contenteditable="true"][data-tribute="true"]');
+        const secondButton = document.querySelector('[data-cy="generate-button"]');
+        const downloadButton = document.querySelector('[data-cy="download-ai-img-button"]');
+        const colorsButton = Array.from(document.querySelectorAll('button')).find(button => button.textContent.includes('Colores'));
+        const addButton = document.querySelector('button[aria-haspopup="dialog"][data-state="closed"]');
+        const mainImageElement = document.querySelector('img.h-full.w-full.object-cover');
+                const trashButton = Array.from(document.querySelectorAll('button')).find(btn =>
+            btn.classList.contains('absolute') &&
+            btn.classList.contains('right-1') &&
+            btn.classList.contains('top-1') &&
+            btn.classList.contains('bg-black/70')
+        );
 
-        // Ajout du sélecteur pour le bouton de suppression de l'image précédente
-        const trashButton = document.querySelector('button.absolute.right-1.top-1.flex.h-6.w-6.items-center.justify-center.rounded-full.bg-black\/70'); // Utiliser la classe plus unique et échapper le '/'
-
-        if(!secondButton||!downloadButton||!colorsButton||!addButton||!mainImageElement || !textInput){ // Vérifier que l'élément texte est aussi trouvé
-            console.error('ERREUR INIT: Un ou plusieurs éléments nécessaires (boutons, image principale ou champ texte) n'ont pas été trouvés. Vérifiez les sélecteurs.');
-            // Le script va s'arrêter ici car il ne peut pas fonctionner sans ces éléments
-            stopAutomation(); // Utiliser la fonction d'arrêt si elle est définie
+        if (!secondButton || !downloadButton || !colorsButton || !addButton || !mainImageElement || !textInput) {
+            console.error(`ERREUR INIT: Un ou plusieurs éléments nécessaires (boutons, image principale ou champ texte) n'ont pas été trouvés. Vérifiez les sélecteurs.`);
+            stopAutomation();
             return;
         }
 
-        // --- NOUVELLE ÉTAPE : Retirer l'image précédente si le bouton poubelle est présent ---
         if (trashButton) {
-            console.log('LOG: Bouton "Poubelle" (retirer image précédente) trouvé ! Tentative de clic...');
+            console.log(`LOG: Bouton "Poubelle" (retirer image précédente) trouvé ! Tentative de clic...`);
             trashButton.click();
-            console.log('LOG: Cliqué sur le bouton "Poubelle".');
-            // Délai pour que l'image soit retirée et l'interface mise à jour
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Attend 1 seconde
-            console.log('LOG: Délai après clic "Poubelle" terminé.');
+            console.log(`LOG: Cliqué sur le bouton "Poubelle".`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log(`LOG: Délai après clic "Poubelle" terminé.`);
         } else {
-            console.log('LOG: Bouton "Poubelle" non trouvé (probablement premier tour ou pas d'image à retirer).');
+            console.log(`LOG: Bouton "Poubelle" non trouvé (probablement premier tour ou pas d'image à retirer).`);
         }
 
-
-        // --- ÉTAPE 1: Télécharger l'image d'aperçu (si elle est disponible) ---
         downloadButton.click();
-        console.log('LOG: Cliqué sur le bouton de téléchargement (Download AI Image).');
+        console.log(`LOG: Cliqué sur le bouton de téléchargement (Download AI Image).`);
 
-        setTimeout(()=>{
+        setTimeout(() => {
             if (mainImageElement && mainImageElement.src.startsWith('data:image/')) {
                 let fileExtension = 'jpeg';
                 if (mainImageElement.src.startsWith('data:image/png')) {
@@ -240,74 +232,66 @@ javascript:(function(){
                 const filenameToDownload = `generated_image_${Date.now()}.${fileExtension}`;
                 downloadBase64Image(mainImageElement.src, filenameToDownload);
             } else {
-                console.warn('LOG: Image Base64 d'aperçu non trouvée ou src incorrect pour le téléchargement.');
+                console.warn(`LOG: Image Base64 d'aperçu non trouvée ou src incorrect pour le téléchargement.`);
             }
 
-            // --- ÉTAPE 2: Cliquer "Añadir" ---
-            setTimeout(()=>{
+            setTimeout(() => {
                 addButton.click();
-                console.log('LOG: Cliqué sur le bouton "Añadir".');
+                console.log(`LOG: Cliqué sur le bouton "Añadir".`);
 
-                // --- ÉTAPE 3: Cliquer "Usar tus creaciones" ---
-                setTimeout(()=>{
+                setTimeout(() => {
                     const useCreationsButton = Array.from(document.querySelectorAll('div[data-radix-popper-content-wrapper] button')).find(button => button.textContent.includes('Usar tus creaciones'));
 
                     if (useCreationsButton) {
                         useCreationsButton.click();
-                        console.log('LOG: Cliqué sur le bouton "Usar tus creaciones".');
+                        console.log(`LOG: Cliqué sur le bouton "Usar tus creaciones".`);
                     } else {
-                        console.error('ERREUR: Le bouton "Usar tus creaciones" n'a pas été trouvé dans le pop-up après "Añadir".');
+                        console.error(`ERREUR: Le bouton "Usar tus creaciones" n'a pas été trouvé dans le pop-up après "Añadir".`);
                         return;
                     }
 
-                    // --- ÉTAPE 4: Sélectionner une image dans la galerie ---
-                    console.log('LOG: Tentative de recherche du conteneur de la galerie (sélecteur plus robuste)...');
-                    setTimeout(()=>{ // Délai pour que la galerie d'images s'affiche.
+                    setTimeout(() => {
                         const modalContainer = document.querySelector('[data-cy="modal-upload-use-image"]');
                         let historyGalleryContainer = null;
                         if (modalContainer) {
                             historyGalleryContainer = modalContainer.querySelector('[role="tabpanel"][data-state="active"]');
                         }
-                        
+
                         let galleryImageButton = null;
                         if (historyGalleryContainer) {
-                            console.log('LOG: Conteneur de la galerie trouvé ! Tentative de recherche du bouton d'image...');
-                            galleryImageButton = historyGalleryContainer.querySelector('button.relative.aspect-square'); 
+                            console.log(`LOG: Conteneur de la galerie trouvé ! Tentative de recherche du bouton d'image...`);
+                            galleryImageButton = historyGalleryContainer.querySelector('button.relative.aspect-square');
                         } else {
-                            console.error('ERREUR: Conteneur de la galerie non trouvé (sélecteur "[data-cy="modal-upload-use-image"] [role="tabpanel"][data-state="active"]"). Vérifiez le sélecteur ou le délai.');
-                            return;
-                        }
-                        
-                        if (galleryImageButton) {
-                            console.log('LOG: Bouton d'image de la galerie trouvé ! Tentative de clic...');
-                            galleryImageButton.click();
-                            console.log('LOG: Cliqué sur une image de la galerie.');
-                        } else {
-                            console.error('ERREUR: Aucun bouton d'image dans la galerie (sélecteur "button.relative.aspect-square") n'a été trouvé dans le conteneur. Vérifiez le sélecteur ou le délai.');
+                            console.error(`ERREUR: Conteneur de la galerie non trouvé (sélecteur "[data-cy="modal-upload-use-image"] [role="tabpanel"][data-state="active"]"). Vérifiez le sélecteur ou le délai.`);
                             return;
                         }
 
-                        // --- ÉTAPE 5: Cliquer "Usar imagen" ---
-                        console.log('LOG: Tentative de recherche du bouton "Usar imagen"...');
-                        setTimeout(()=>{ // Délai après le clic sur l'image de la galerie.
+                        if (galleryImageButton) {
+                            console.log(`LOG: Bouton d'image de la galerie trouvé ! Tentative de clic...`);
+                            galleryImageButton.click();
+                            console.log(`LOG: Cliqué sur une image de la galerie.`);
+                        } else {
+                            console.error(`ERREUR: Aucun bouton d'image dans la galerie (sélecteur "button.relative.aspect-square") n'a été trouvé dans le conteneur. Vérifiez le sélecteur ou le délai.`);
+                            return;
+                        }
+
+                        setTimeout(() => {
                             const usarImagenButton = Array.from(document.querySelectorAll('button')).find(button => button.textContent.includes('Usar imagen'));
-                            
+
                             if (usarImagenButton) {
-                                console.log('LOG: Bouton "Usar imagen" trouvé ! Tentative de clic...');
+                                console.log(`LOG: Bouton "Usar imagen" trouvé ! Tentative de clic...`);
                                 usarImagenButton.click();
-                                console.log('LOG: Cliqué sur le bouton "Usar imagen".');
+                                console.log(`LOG: Cliqué sur le bouton "Usar imagen".`);
                             } else {
-                                console.error('ERREUR: Le bouton "Usar imagen" n'a pas été trouvé. Vérifiez le sélecteur ou le délai.');
+                                console.error(`ERREUR: Le bouton "Usar imagen" n'a pas été trouvé. Vérifiez le sélecteur ou le délai.`);
                                 return;
                             }
 
-                            // --- ÉTAPE 6: Cliquer "Colores" ---
-                            setTimeout(()=>{ // Délai après "Usar imagen" pour que l'interface se mette à jour.
+                            setTimeout(() => {
                                 colorsButton.click();
-                                console.log('LOG: Cliqué sur le bouton "Colores".');
+                                console.log(`LOG: Cliqué sur le bouton "Colores".`);
 
-                                // --- ÉTAPE 7: Sélectionner une palette de couleurs aléatoire ---
-                                setTimeout(()=>{
+                                setTimeout(() => {
                                     const colorPaletteButtons = Array.from(document.querySelectorAll('div.grid button'));
                                     if (colorPaletteButtons.length > 0) {
                                         const randomIndex = Math.floor(Math.random() * colorPaletteButtons.length);
@@ -317,54 +301,49 @@ javascript:(function(){
                                         const colorName = colorNameSpan ? colorNameSpan.textContent.trim() : 'Couleur Inconnue';
                                         console.log(`LOG: Cliqué sur la palette de couleurs aléatoire: ${colorName}.`);
                                     } else {
-                                        console.error('ERREUR: Aucune palette de couleurs trouvée.');
+                                        console.error(`ERREUR: Aucune palette de couleurs trouvée.`);
                                     }
-                                    
-                                    // --- ÉTAPE 8: Insérer le prompt aléatoire et Cliquer "Generate" ---
+
                                     const currentSubject = subjects[Math.floor(Math.random() * subjects.length)];
                                     const currentBackground = backgroundsAndSurfaces[Math.floor(Math.random() * backgroundsAndSurfaces.length)];
                                     const currentLighting = lightingAndStyles[Math.floor(Math.random() * lightingAndStyles.length)];
-                                    
-                                    // Construction du prompt complet avec les 3 variables et les parties fixes
                                     const fullPrompt = basePromptPrefix + currentSubject + midPromptPart1 + currentBackground + midPromptPart2 + currentLighting + promptSuffix;
 
                                     textInput.textContent = fullPrompt;
                                     const inputEvent = new Event('input', { bubbles: true });
                                     textInput.dispatchEvent(inputEvent);
-                                    console.log(`LOG: Inséré "${fullPrompt.substring(0, 70)}..." dans l'élément texte.`); // Log tronqué
+                                    console.log(`LOG: Inséré "${fullPrompt.substring(0, 70)}..." dans l'élément texte.`);
 
-                                    setTimeout(() => { // Délai avant le clic sur Generate
+                                    setTimeout(() => {
                                         secondButton.click();
-                                        console.log('LOG: Cliqué sur le bouton (Generate)');
-
+                                        console.log(`LOG: Cliqué sur le bouton (Generate)`);
                                         const randomDelay = Math.random() * (maxDelayMs - minDelayMs) + minDelayMs;
                                         console.log(`LOG: Prochain cycle dans ${Math.round(randomDelay / 1000)} secondes.`);
                                         automationTimeoutId = setTimeout(clickButtonsInLoop, randomDelay);
-                                    }, 500); // Délai fixe après le clic sur Générer (pour laisser le site réagir au prompt)
+                                    }, 500);
 
-                                }, 1000); // Délai après "Colores" pour laisser les options apparaître
-                            }, 1500); // Délai après "Usar imagen". Ajustez si besoin.
-                        }, 2500); // Délai après clic sur image galerie. Était 2500.
-                    }, 3000); // Délai après "Usar tus creaciones". Ajustez si besoin. (Celui-ci était déjà là)
-                }, 1500); // Délai après "Añadir" pour que le pop-up avec les options apparaisse
-            }, 500); // Délai après le téléchargement de l'aperçu avant "Añadir"
-        }, 1000); // Délai après le clic sur le bouton de téléchargement pour trouver l'image d'aperçu
+                                }, 1000);
+                            }, 1500);
+                        }, 2500);
+                    }, 3000);
+                }, 1500);
+            }, 500);
+        }, 1000);
     }
 
-    // --- Fonctions de contrôle de l'automatisation ---
     function stopAutomation() {
         if (automationTimeoutId !== null) {
             clearTimeout(automationTimeoutId);
-            automationTimeoutId = null; // Réinitialise l'ID
-            console.log('Automatisation arrêtée par commande.');
+            automationTimeoutId = null;
+            console.log(`Automatisation arrêtée par commande.`);
         } else {
-            console.log('Aucune automatisation en cours à arrêter.');
+            console.log(`Aucune automatisation en cours à arrêter.`);
         }
     }
 
     function setDelayRange(newMinSeconds, newMaxSeconds) {
         if (newMinSeconds < 0 || newMaxSeconds < newMinSeconds) {
-            console.error("Erreur: Les valeurs de délai ne sont pas valides. Assurez-vous que min <= max et que les deux sont positifs.");
+            console.error(`Erreur: Les valeurs de délai ne sont pas valides. Assurez-vous que min <= max et que les deux sont positifs.`);
             return;
         }
         minDelayMs = newMinSeconds * 1000;
@@ -382,6 +361,5 @@ javascript:(function(){
     // Rendre les fonctions de contrôle accessibles dans la console
     window.stopAutomation = stopAutomation;
     window.setDelayRange = setDelayRange;
-    console.log('Pour modifier le délai, tapez `setDelayRange(min_secondes, max_secondes)` dans la console. Exemple: `setDelayRange(6, 18);`');
-    console.log('Pour arrêter l'automatisation, tapez `stopAutomation()` dans la console et appuyez sur Entrée.');
-})();
+    console.log(`Pour modifier le délai, tapez \`setDelayRange(min_secondes, max_secondes)\` dans la console. Exemple: \`setDelayRange(6, 18); \``);
+    console.log(`Pour arrêter l'automatisation, tapez \`stopAutomation()\` dans la console et appuyez sur Entrée.`);

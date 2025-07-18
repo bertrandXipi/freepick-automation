@@ -9,8 +9,8 @@ const port = 3000;
 app.use(cors());
 
 // Servir le script d'automatisation
-app.get('/automation.js', (req, res) => {
-  res.sendFile(path.join(__dirname, 'automation.js'));
+app.get('/bundle.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'bundle.js'));
 });
 
 app.listen(port, () => {
